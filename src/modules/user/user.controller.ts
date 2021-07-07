@@ -1,13 +1,13 @@
 import { BadRequestException, Body, Controller, Get, Post, Req, Res, UnauthorizedException } from '@nestjs/common';
-import { AppService } from './app.service';
+import { UserService } from './user.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { Response, Request } from 'express';
 
-@Controller('api')
-export class AppController {
+@Controller('api/user')
+export class UserController {
   constructor(
-    private readonly appService: AppService,
+    private readonly userService: UserService,
     private jwtService: JwtService
   ) {}
 
@@ -19,7 +19,7 @@ export class AppController {
   ){
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    const user = this.appService.create({
+    const user = this.userService.create({
       name,
       email,
       password: hashedPassword
@@ -36,7 +36,7 @@ export class AppController {
     @Body('password') password: string,
     @Res({passthrough: true}) response: Response
   ){
-    const user = await this. appService.findOne({email});
+    const user = await this. userService.findOne({email});
 
     if(!user) {
       throw new BadRequestException('invalid credentials');
@@ -55,6 +55,14 @@ export class AppController {
     };
   }
 
+  @Get('logout')
+  async logout(@Res({passthrough: true}) response: Response){
+    response.cookie('jwt', null, {httpOnly: true});
+    return {
+      message: 'success'
+    }
+  }
+
   @Get('user')
   async user(@Req() request: Request) {
     try {
@@ -66,7 +74,7 @@ export class AppController {
         throw new UnauthorizedException();
       }
 
-      const user = await this.appService.findOne({id: data['id']});
+      const user = await this.userService.findOne({id: data['id']});
 
       const {password, ...result} = user;
 
