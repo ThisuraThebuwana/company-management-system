@@ -1,18 +1,6 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { User } from '../shared/entities/user.entity';
-
-// export const typeOrmConfig: TypeOrmModuleOptions = {
-//   type: 'mysql',
-//   host: process.env.MYSQL_HOST,
-//   port: Number(process.env.MYSQL_PORT),
-//   username: process.env.MYSQL_USER,
-//   password: process.env.MYSQL_PASSWORD,
-//   database: process.env.MYSQL_DATABASE,
-//   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-//   synchronize: true, // Set to false in production environment
-//   insecureAuth: true,
-//   // entityPrefix: "org_"
-// };
+import { Blog } from '../shared/entities/blog.entity';
 
 export const typeOrmConfig: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -21,7 +9,6 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   username: 'root',
   password: '',
   database: 'company_management_db',
-  entities: [User],
-  // entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+  entities: [User, Blog],
   synchronize: true,
 };

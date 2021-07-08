@@ -3,13 +3,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { typeOrmConfig } from './configs/typeorm.config';
 import { UserModule } from './modules/user/user.module';
-// import { CsvModule } from './modules/csv/csv.module';
+import { BlogModule } from './modules/blog/blog.module';
+// import { CsvModule } from 'nest-csv-parser'
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeOrmConfig),
     UserModule,
     // CsvModule,
+    BlogModule,
     JwtModule.register({
       secret: 'secret',
       signOptions: {expiresIn: '1d'}
