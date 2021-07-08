@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { typeOrmConfig } from './configs/typeorm.config';
 import { UserModule } from './modules/user/user.module';
 import { BlogModule } from './modules/blog/blog.module';
+import { ParcelModule } from './modules/parcel/parcel.module';
 // import { CsvModule } from 'nest-csv-parser'
 
 @Module({
@@ -12,6 +13,7 @@ import { BlogModule } from './modules/blog/blog.module';
     UserModule,
     // CsvModule,
     BlogModule,
+    ParcelModule,
     JwtModule.register({
       secret: 'secret',
       signOptions: {expiresIn: '1d'}
