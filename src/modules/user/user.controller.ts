@@ -13,6 +13,7 @@ export class UserController {
 
   @Post('register')
   async register(
+    @Body('user_id') user_id: string,
     @Body('name') name: string,
     @Body('email') email: string,
     @Body('password') password: string,
@@ -20,6 +21,7 @@ export class UserController {
     const hashedPassword = await bcrypt.hash(password, 12);
 
     const user = this.userService.create({
+      user_id,
       name,
       email,
       password: hashedPassword
@@ -32,11 +34,11 @@ export class UserController {
 
   @Post('login')
   async login(
-    @Body('email') email: string,
+    @Body('user_id') user_id: string,
     @Body('password') password: string,
     @Res({passthrough: true}) response: Response
   ){
-    const user = await this. userService.findOne({email});
+    const user = await this. userService.findOne({user_id});
 
     if(!user) {
       throw new BadRequestException('invalid credentials');
@@ -46,7 +48,7 @@ export class UserController {
       throw new BadRequestException('invalid credentials');
     }
 
-    const jwt = await this.jwtService.signAsync({id: user.id});
+    const jwt = await this.jwtService.signAsync({index: user.index});
 
     response.cookie('jwt', jwt, {httpOnly: true});
 
@@ -74,7 +76,7 @@ export class UserController {
         throw new UnauthorizedException();
       }
 
-      const user = await this.userService.findOne({id: data['id']});
+      const user = await this.userService.findOne({index: data['index']});
 
       const {password, ...result} = user;
 
