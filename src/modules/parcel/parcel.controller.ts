@@ -1,6 +1,6 @@
 import {
   Body,
-  Controller,
+  Controller, Get,
   Post, Req,
   Res,
   UnauthorizedException,
@@ -8,7 +8,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor} from '@nestjs/platform-express';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { ParcelService } from './parcel.service';
 
@@ -72,4 +72,24 @@ export class ParcelController {
     }
   }
 
+  @Get('parcels')
+  async findParcels(@Req() request: Request) {
+    try {
+      const cookie = request.cookies['jwt'];
+
+      const data = await this.jwtService.verifyAsync(cookie);
+
+      if(!data) {
+        throw new UnauthorizedException();
+      }
+
+      const parcels = await this.parcelService.find({user: data['user_id']});
+
+      // const {password, ...result} = user;
+
+      return parcels;
+    } catch (e) {
+      throw new UnauthorizedException();
+    }
+  }
 }

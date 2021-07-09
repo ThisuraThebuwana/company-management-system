@@ -25,6 +25,10 @@ export class ParcelService {
     return this.parcelRepository.findOne(condition);
   }
 
+  async find(condition: any): Promise<Parcel[]> {
+    return this.parcelRepository.find(condition);
+  }
+
   async checkTrackingNoAvailability (tracking_no: string) : Promise<any> {
     try {
       const parcel = await this.findOne({tracking_no});
