@@ -8,11 +8,8 @@ export class Parcel {
   @Column()
   user: string;
 
-  @Column({ type: 'timestamp', name: 'date', default: null })
-  date: Date;
-
-  @Column()
-  time: string;
+  @Column({ type: 'timestamp', name: 'datetime', default: null })
+  datetime: Date;
 
   @Column({unique: true})
   tracking_no: string;

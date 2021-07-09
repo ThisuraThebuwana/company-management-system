@@ -6,7 +6,7 @@ import { ParcelRepository } from '../../shared/repositories/parcel.repository';
 
 @Injectable()
 export class ParcelService {
-  NO_OF_COLUMNS = 10;
+  NO_OF_COLUMNS = 9;
 
   constructor(
     @InjectRepository (Parcel) private readonly parcelRepository: ParcelRepository,
@@ -37,25 +37,24 @@ export class ParcelService {
           let data = allTextLines[i].split(',');
           if(data.length == this.NO_OF_COLUMNS) {
 
-            if(data[0]=='' || data[1]=='' ||data[2]=='' || data[3]=='' ||data[4]=='' || data[5]=='' ||data[6]=='' || data[7]=='' ||data[8]=='' ||data[9]==''){
+            if(data[0]=='' || data[1]=='' ||data[2]=='' || data[3]=='' ||data[4]=='' || data[5]=='' ||data[6]=='' || data[7]=='' ||data[8]==''){
 
-              if(data[3]==''){
+              if(data[2]==''){
                 error = 'There is a row with empty Tracking number.';
               }else{
-                errorNullRows.push(data[3]);
+                errorNullRows.push(data[2]);
               }
             }else{
               results = this.create({
                 user:data[0],
-                date:data[1],
-                time:data[2],
-                tracking_no:data[3],
-                order_no:data[4],
-                name:data[5],
-                address:data[6],
-                phone_no:data[7],
-                weight:data[8],
-                rate:data[9],
+                datetime:data[1],
+                tracking_no:data[2],
+                order_no:data[3],
+                name:data[4],
+                address:data[5],
+                phone_no:data[6],
+                weight:data[7],
+                rate:data[8],
               });
             }
           }else if(data.length > 1){

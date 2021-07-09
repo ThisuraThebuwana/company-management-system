@@ -23,8 +23,7 @@ export class ParcelController {
   @Post('create')
   async create(
     @Body('user') user: string,
-    @Body('date') date: string,
-    @Body('time') time: string,
+    @Body('datetime') datetime: string,
     @Body('tracking_no') tracking_no: string,
     @Body('order_no') order_no: string,
     @Body('name') name: string,
@@ -36,8 +35,7 @@ export class ParcelController {
     try {
       const parcel = this.parcelService.create({
         user,
-        date,
-        time,
+        datetime,
         tracking_no,
         order_no,
         name,
