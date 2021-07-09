@@ -48,7 +48,7 @@ export class UserController {
       throw new BadRequestException('invalid credentials');
     }
 
-    const jwt = await this.jwtService.signAsync({index: user.index});
+    const jwt = await this.jwtService.signAsync({user_id: user.user_id});
 
     response.cookie('jwt', jwt, {httpOnly: true});
 
@@ -76,7 +76,7 @@ export class UserController {
         throw new UnauthorizedException();
       }
 
-      const user = await this.userService.findOne({index: data['index']});
+      const user = await this.userService.findOne({user_id: data['user_id']});
 
       const {password, ...result} = user;
 

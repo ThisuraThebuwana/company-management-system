@@ -1,11 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from './user.entity';
 
 @Entity('parcel')
 export class Parcel {
   @PrimaryGeneratedColumn()
   index: number;
 
-  @Column()
+  @ManyToOne(() => User, user => user.parcel)
+  @JoinColumn({ name: 'user' })
   user: string;
 
   @Column({ type: 'timestamp', name: 'datetime', default: null })

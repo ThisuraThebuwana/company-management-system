@@ -1,11 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Parcel } from './parcel.entity';
 
 @Entity('users')
 export class User {
-  @PrimaryGeneratedColumn()
-  index: number;
-
-  @Column({unique: true})
+  @PrimaryColumn()
   user_id: string;
 
   @Column()
@@ -16,4 +14,7 @@ export class User {
 
   @Column()
   password: string;
+
+  @OneToMany(() => Parcel, parcel => parcel.user)
+  parcel: Parcel[];
 }
