@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Parcel } from '../../shared/entities/parcel.entity';
 import { CsvParser } from 'nest-csv-parser';
@@ -21,11 +21,30 @@ export class ParcelService {
     }
   }
 
+  async findOne(condition: any): Promise<Parcel> {
+    return this.parcelRepository.findOne(condition);
+  }
+
+  async checkTrackingNoAvailability (tracking_no: string) : Promise<any> {
+    try {
+      const parcel = await this.findOne({tracking_no});
+      if(!parcel) {
+        return null;
+      }
+      else{
+        return parcel;
+      }
+    }catch (e) {
+      console.log(e);
+    }
+  }
+
   async parse(stream: any): Promise<any> {
     try {
       let results;
       let error = '';
       let errorNullRows=[];
+      let duplicatedTrckNo=[];
 
       const allText = stream.toString();
       const allTextLines = allText.split(/\r\n|\n/);
@@ -45,17 +64,23 @@ export class ParcelService {
                 errorNullRows.push(data[2]);
               }
             }else{
-              results = this.create({
-                user:data[0],
-                datetime:data[1],
-                tracking_no:data[2],
-                order_no:data[3],
-                name:data[4],
-                address:data[5],
-                phone_no:data[6],
-                weight:data[7],
-                rate:data[8],
-              });
+              const availableParcel = await this.checkTrackingNoAvailability(data[2]);
+              if(!availableParcel){
+                results = this.create({
+                  user:data[0],
+                  datetime:data[1],
+                  tracking_no:data[2],
+                  order_no:data[3],
+                  name:data[4],
+                  address:data[5],
+                  phone_no:data[6],
+                  weight:data[7],
+                  rate:data[8],
+                });
+              }else{
+                duplicatedTrckNo.push(data[2]);
+              }
+
             }
           }else if(data.length > 1){
             error = 'Invalid table structure.';
@@ -63,21 +88,12 @@ export class ParcelService {
         }
       }
 
-      // const str = createReadStream(stream);
-      //
-      // console.log("str : ", str);
-      // // console.log("str : ", stream);
-      //
-      // const entities: any = await this.csvParser.parse(
-      //   str,
-      //   Blog
-      // );
-      //
-      // console.log(entities);
-      //
-      // return entities;
       if(errorNullRows.length>0){
         error = 'There are null values in following Tracking numbers:'+errorNullRows;
+      }
+
+      if(duplicatedTrckNo.length>0){
+        error = 'There are duplicated tracking numbers:'+duplicatedTrckNo;
       }
 
       if(error){
