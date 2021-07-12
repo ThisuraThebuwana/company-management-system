@@ -94,4 +94,30 @@ export class ParcelController {
       throw new UnauthorizedException();
     }
   }
+
+  @Get('all-parcels')
+  async findAllParcels(@Req() request: Request) {
+    try {
+      const cookie = request.cookies['jwt'];
+
+      const data = await this.jwtService.verifyAsync(cookie);
+
+      if(!data) {
+        throw new UnauthorizedException();
+      }
+      const userID = data['user_id'];
+      let parcels;
+      if(userID.toString().charAt(0) === 'A'){
+        parcels = await this.parcelService.find({});
+      }else{
+        throw new UnauthorizedException();
+      }
+
+      // const {password, ...result} = user;
+
+      return parcels;
+    } catch (e) {
+      throw new UnauthorizedException();
+    }
+  }
 }
