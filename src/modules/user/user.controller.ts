@@ -59,7 +59,7 @@ export class UserController {
 
   @Get('logout')
   async logout(@Res({passthrough: true}) response: Response){
-    response.cookie('jwt', null, {httpOnly: true});
+    response.clearCookie('jwt');
     return {
       message: 'success'
     }
