@@ -6,7 +6,7 @@ import { ParcelRepository } from '../../shared/repositories/parcel.repository';
 
 @Injectable()
 export class ParcelService {
-  NO_OF_COLUMNS = 9;
+  NO_OF_COLUMNS = 7;
 
   constructor(
     @InjectRepository (Parcel) private readonly parcelRepository: ParcelRepository,
@@ -43,7 +43,7 @@ export class ParcelService {
     }
   }
 
-  async parse(stream: any): Promise<any> {
+  async parse(stream: any, user_id: string): Promise<any> {
     try {
       let results;
       let error = '';
@@ -60,31 +60,31 @@ export class ParcelService {
           let data = allTextLines[i].split(',');
           if(data.length == this.NO_OF_COLUMNS) {
 
-            if(data[0]=='' || data[1]=='' ||data[2]=='' || data[3]=='' ||data[4]=='' || data[5]=='' ||data[6]=='' || data[7]=='' ||data[8]==''){
+            if(data[0]=='' || data[1]=='' ||data[2]=='' || data[3]=='' ||data[4]=='' || data[5]=='' ||data[6]==''){
 
-              if(data[2]==''){
+              if(data[0]==''){
                 error = 'There is a row with empty Tracking number.';
               }else{
-                errorNullRows.push(data[2]);
+                errorNullRows.push(data[0]);
               }
             }else{
-              const availableParcel = await this.checkTrackingNoAvailability(data[2]);
+              const availableParcel = await this.checkTrackingNoAvailability(data[0]);
               if(!availableParcel){
                 results = this.create({
-                  user:data[0],
-                  datetime:data[1],
-                  tracking_no:data[2],
-                  order_no:data[3],
-                  name:data[4],
-                  address:data[5],
-                  phone_no:data[6],
-                  weight:data[7],
-                  rate:data[8],
+                  user:user_id,
+                  datetime:Date(),
+                  tracking_no:data[0],
+                  order_no:data[1],
+                  name:data[2],
+                  address:data[3],
+                  city:data[4],
+                  phone_no:data[5],
+                  weight:data[6],
+                  rate:null,
                 });
               }else{
-                duplicatedTrckNo.push(data[2]);
+                duplicatedTrckNo.push(data[0]);
               }
-
             }
           }else if(data.length > 1){
             error = 'Invalid table structure.';

@@ -28,6 +28,7 @@ export class ParcelController {
     @Body('order_no') order_no: string,
     @Body('name') name: string,
     @Body('address') address: string,
+    @Body('city') city: string,
     @Body('phone_no') phone_no: string,
     @Body('weight') weight: number,
     @Body('rate') rate: number,
@@ -40,6 +41,7 @@ export class ParcelController {
         order_no,
         name,
         address,
+        city,
         phone_no,
         weight,
         rate,
@@ -64,7 +66,7 @@ export class ParcelController {
         throw new UnauthorizedException();
       }
 
-      const resp = await this.parcelService.parse(file.buffer);
+      const resp = await this.parcelService.parse(file.buffer, data['user_id']);
 
       res.send(resp);
     } catch (e) {

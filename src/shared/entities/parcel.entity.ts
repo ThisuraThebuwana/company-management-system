@@ -26,12 +26,15 @@ export class Parcel {
   address: string;
 
   @Column()
+  city: string;
+
+  @Column()
   phone_no: string;
 
   @Column()
   weight: number;
 
-  @Column()
+  @Column({ default: null })
   rate: number;
 
   @Column({ default: null })
