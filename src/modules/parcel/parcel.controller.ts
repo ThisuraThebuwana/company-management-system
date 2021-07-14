@@ -120,4 +120,32 @@ export class ParcelController {
       throw new UnauthorizedException();
     }
   }
+
+
+
+  @Get('authenticate')
+  async authenticate(@Req() request: Request) {
+    try {
+      const cookie = request.cookies['jwt'];
+
+      const data = await this.jwtService.verifyAsync(cookie);
+
+      if(!data) {
+        return {
+          statusCode: 401,
+          message: "failed"
+        };
+      }
+
+      return {
+        statusCode: 200,
+        message: "success"
+      };
+    } catch (e) {
+      return {
+        statusCode: 401,
+        message: "failed"
+      };
+    }
+  }
 }
